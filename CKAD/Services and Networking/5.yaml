@@ -1,0 +1,21 @@
+# Fix the service assignment to properly select the backend Pod. 
+# And assign the correct target port.
+
+# check backend pod labels by: 
+kubectl describe pod backend
+# labels on backend: app=nginx,tier=backend
+
+# check labels on our service: 
+kubectl describe service nginx-service
+# labels on service: deployment=app,tier=backend
+
+#now we will update the labels on the service by editing yaml file.
+kubectl edit service nginx-service
+# and change selectors to : app=nginx,tier=backend
+
+# to test the pods selected by service we can do again:
+kubectl run busybox --image=busybox --restart=Never --rm -it -- /bin/sh
+/ # wget --spider --timeout=1 serviceip:serviceport
+wget --spider --timeout=1 10.96.184.104:9000
+
+

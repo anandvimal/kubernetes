@@ -1,0 +1,8 @@
+# Create a new pod named backend that uses the image nginx. 
+# Assign the labels tier=backend and app=nginx. 
+# Expose container port 80.
+#
+
+kubectl run backend --image=nginx --restart=Never -l tier=backend,app=nginx --port=80
+
+

@@ -1,0 +1,17 @@
+# Try to access the set of Pods through the Service from within the cluster.
+# Which pods does the service select. 
+#
+
+# to hit service we will run a temp pod:
+kubectl run busybox --image=busybox --restart=Never -it --rm -- /bin/sh
+
+# this will get you in the shell. from shell use wget to reach teh service ip:port
+/ # wget --spider --timeout=1 IP:port
+wget --spider --timeout=1 10.96.184.104:9000
+ 
+# we did not reach any pods. as pod selector fields point to labels that do not have any matching pods. 
+# to see which pods service selects do:
+kubectl describe service nginx-service
+# you can notice in Selector: deployment:app,tier=backend
+
+

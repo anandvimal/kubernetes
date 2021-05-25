@@ -1,0 +1,54 @@
+# change clusterIP to Nodeport #this did not worked
+kubectl patch service nginx-service -p \
+'{ "spec": {"NodePort"} }'
+
+# we get a yaml file for nodeport service:
+# after that you can check the nodeport from servicdde.
+kubectl create service nodeport nginx-service --tcp=9000:80 --dry-run=client -o yaml > 6-nginx-service.yaml
+
+# then we get the labels (pod selectors) from the cluster ip service by:
+kubectl describe service nginx-service
+
+# add those labels to the new service file by:
+vim 6-nginx-service.yaml
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nginx-service
+  name: nginx-service
+spec:
+  ports:
+  - name: 9000-80
+    port: 9000
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx
+    tier: backend
+  type: NodePort
+status:
+  loadBalancer: {}
+```
+
+# now we just delete the previous service and apply the new file.
+kubectl delete svc nginx-service
+kubectl apply -f 6-nginx-service.yaml
+
+# verify new service is of type nodeport and selectors are correct. (app=nginx,tier=backend)
+#
+kubectl describe service nginx-service
+# node the nodeport from here.
+
+# get the node ip:
+kubectl get nodes
+kubectl describe node  minikube | grep InternalIP:
+
+# now we can do curl internalIP:Nodeport
+kubectl run busybox --image=busybox --restart=Never --rm -it -- /bin/sh
+/ # wget --spider --timeout=1 internalip:nodeport
+
+

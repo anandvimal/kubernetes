@@ -1,0 +1,14 @@
+# Create a new Pod named frontend that uses the image nginx. 
+# Assign the labels tier=frontend and app=nginx. 
+# Expose the container port 80
+#
+
+# imperative
+kubectl run frontend --image=nginx --restart=Never -l tier=frontend,app=nginx --port=80
+
+
+
+
+
+
+

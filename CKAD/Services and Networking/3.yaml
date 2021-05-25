@@ -1,0 +1,55 @@
+# Create a new service named nginx-service of ClusterIP. 
+# Assign the port 9000 and target port 80. 
+# The label selector should use the criteria tier=backend and deployment=app.
+#
+
+kubectl create service nginx-service clusterip \ 
+--port=9000:80 \
+--dry-run=client -o yaml
+
+
+# this will give this in return:
+#
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nginx-service
+  name: nginx-service
+spec:
+  ports:
+  - name: 9000-80
+    port: 9000
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx-service
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+# we can add podd selectos here now:
+#
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nginx-service
+  name: nginx-service
+spec:
+  ports:
+  - name: 9000-80
+    port: 9000
+    protocol: TCP
+    targetPort: 80
+  selector:
+    tier: backend
+    deployment: app
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+
