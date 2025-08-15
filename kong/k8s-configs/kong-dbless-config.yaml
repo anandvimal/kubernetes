@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-dbless-config
+  namespace: kong
+data:
+  kong.yml: |
+    _format_version: "3.0"
+    services:
+    - name: httpbin-service
+      url: http://httpbin.default.svc.cluster.local:80
+      routes:
+      - name: httpbin-route
+        paths:
+        - /api
+        strip_path: true
+      plugins:
+      - name: key-auth
+        config:
+          key_names:
+          - apikey
+          hide_credentials: true
+    consumers:
+    - username: test-user
+      keyauth_credentials:
+      - key: my-api-key
